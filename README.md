@@ -1,1 +1,1 @@
-# ConsoleApplication2
+# 自用GC一键启动程序
