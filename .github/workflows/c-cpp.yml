@@ -1,15 +1,29 @@
-name: MSBuild
+name: C++ Build
+
 on: [push]
+
+
 jobs:
   build:
     runs-on: windows-latest
+
     steps:
-    - uses: actions/checkout@v2
-    - name: Pack
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up MSVC
+      uses: microsoft/setup-msbuild@v1
+
+    - name: Build
       run: |
-        vcpkg install drogon:x64-windows
-        vcpkg export drogon:x64-windows --zip
-    - uses: actions/upload-artifact@v2
+        msbuild ./ConsoleApplication2/ConsoleApplication2.vcxproj /p:Configuration=Release /p:Platform=x64 /p:OutDir=NeuvilletteQuickStart_build /p:TargetName=NeuvilletteQuickStart
+        
+        chcp 65001
+        set "LC_ALL=C.UTF-8"
+      working-directory: ${{ github.workspace }}
+
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v2
       with:
-        name: Upload
-        path: C:/vcpkg/*.zip
+        name: cpp-build-artifacts
+        path: NeuvilletteQuickStart_build
